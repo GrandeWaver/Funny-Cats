@@ -56,7 +56,7 @@ mysqli_query($polaczenie, "SET CHARSET utf8");
 mysqli_query($polaczenie, "SET NAMES 'utf8' COLLATE 'utf8_polish_ci'");
 mysqli_select_db($polaczenie, $database);
 
-$zapytanietxt = file_get_contents("zapytanie.txt");
+$zapytanietxt = "SELECT * FROM filmiki";
 
 $rezultat = mysqli_query($polaczenie, $zapytanietxt);
 $ile = mysqli_num_rows($rezultat);
@@ -88,7 +88,7 @@ END;
 		
 echo<<<END
 <div class="content">
-<a href="/watch.php?id=$id&nazwa=$nazwa&wyswietlenia=$wyswietlenia">
+<a href="/watch.php?id=$id">
   <img class="obrazek" 
   src='zdjecia/$id.jpg'
   onmouseout="this.src='zdjecia/$id.jpg'" 
