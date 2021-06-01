@@ -37,8 +37,8 @@ body{
 
 .content{
   margin: 10px;
-  width:150px;
-  height: 100px;
+  width:230px;
+  height: 180px;
   float:left;
   margin-bottom:45px;
 }
