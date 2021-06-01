@@ -11,9 +11,6 @@ if(isset($_GET["lubienie"]))
   }
   else
   {
-  mysqli_query($polaczenie, "SET CHARSET utf8");
-  mysqli_query($polaczenie, "SET NAMES 'utf8' COLLATE 'utf8_polish_ci'");
-
   mysqli_select_db($polaczenie, $database);
 
   $polubienia = json_decode($_GET['ilosc'], true);
@@ -37,9 +34,6 @@ if(isset($_GET["nielubienie"]))
   }
   else
   {
-  mysqli_query($polaczenie, "SET CHARSET utf8");
-  mysqli_query($polaczenie, "SET NAMES 'utf8' COLLATE 'utf8_polish_ci'");
-
   mysqli_select_db($polaczenie, $database);
 
   $nielubienia = json_decode($_GET['ilosc'], true);
