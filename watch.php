@@ -37,16 +37,36 @@ body{
   float:left;
 }
 
+.komentarz{
+  margin-top: 25px;
+  background-color:blue;
+  margin-left: 5px;
+}
+
+#polecane{
+  float: right;
+  height: 1070px;
+  width: 280px;
+}
+
 .content{
-  margin: 10px;
-  width:150px;
-  height: 100px;
+  width:260px;
+  height: 150px;
   float:left;
-  margin-bottom:45px;
+  margin-bottom:65px;
+  margin-left:25px;
+  float: right;
 }
 
 .opis{
   background-color:blue;
+}
+
+form {
+  padding: 15px;
+  border: 1px solid #666;
+  background: blue;
+  display: none;
 }
 </style>
 
@@ -87,20 +107,19 @@ else
   <div><a href="/"><h2 id="logo">Śmieszne Koty</h2></a></div>
     <br>
     <div id="list">
-      <h4>Obejrzane</h4>
-    <h4>Najpopularniejsze</h4>
-    <h4>Losowo</h4>
+      <h4>*Strona poświęcona nauce języka PHP*</h4>
+      <h4>*Przy tworzeniu strony największą uwagę zwracałem na funkcje, a nie na wygląd.*</h4>
     </div>
   </div>
   <div id="contents">
 
-  <div style="clear: both; margin-top:-62px;">
-    <video width="1200" height="800" controls>
+  <div style="float: left; margin-top:-62px;">
+    <video width="1300" height="800" controls>
     <source src="filmiki/$aktualny_id.mp4" type="video/mp4">
     </video>
     <div><h3>$aktualna_nazwa<h3></div>
     <div><h3>Wyświetlenia: $aktualne_wyswietlenia<h3></div>
-    <div onclick="polubienie($polubienia, $nielubienia)">
+    <div onclick="polubienie($polubienia, $aktualny_id, $nielubienia)">
       Polubienia:
       <div id="ilosc_polubien">$polubienia</div>
     </div>
@@ -108,17 +127,47 @@ else
       Nielubienia:
       <div id="ilosc_nielubien">$nielubienia</div>
     </div>
+  
+  <h3>Komentarze:</h3>
+  <button type="button" id="nowy_komentarz">Napisz komentarz</button>
+  <form name="formularz">
+  <b>Twój nick:</b><br><input type="text" name="nick"><br><br>
+  <textarea name="tresc">Twój komentarz:</textarea><br>
+  <button type="button" id="submit" onclick="komentarz($aktualny_id)">Zatwierdź</button>
+  </form>
+
+  <div id="nowy"></div>
+  END;
+  
+  $sql = "SELECT * FROM komentarze WHERE id_filmu='$aktualny_id'";
+  
+  $rezultat = mysqli_query($polaczenie, $sql);
+  $ile = mysqli_num_rows($rezultat);
+  
+  for ($i = 1; $i <= $ile; $i++) 
+  {
     
-    <div style="clear:both;"></div>
+    $row = mysqli_fetch_assoc($rezultat);
+    $id = $row['id'];
+    $tresc = $row['tresc'];
+    $tworca = $row['tworca'];
+    
+  echo<<<END
+  <div class="komentarz">
+  $tworca
+  <br>
+  $tresc
   </div>
   END;
+  }
+
+echo '<div style="clear:both;"></div></div><div id="polecane">';
 
   $sql = "SELECT * FROM filmiki";
   
   $rezultat = mysqli_query($polaczenie, $sql);
-  $ile = mysqli_num_rows($rezultat);
 
-  for ($i = 1; $i <= $ile; $i++) 
+  for ($i = 1; $i <= 5; $i++) 
 	{
 		
 		$row = mysqli_fetch_assoc($rezultat);
@@ -139,11 +188,39 @@ else
   END;
   }
 
-  $polaczenie->close();
+  echo '</div>';
+$polaczenie->close();
 }
 
 ?>
 <script>
+$(document).ready(function() {
+  $("#nowy_komentarz").click(function() {
+    $("form[name='formularz']").toggle();
+  });
+});
+
+function wyswietl_komentarz(nick, tresc){
+  $('#nowy').append("<div class='komentarz'>"+nick+"<br>"+tresc+"</div>")
+}
+
+function komentarz(id){
+  var nick =  $("input[name='nick']").val();
+  var tresc =  $("textarea[name='tresc']").val();
+  $.ajax({
+      type: "GET",
+      url: "/komentarz.php",
+      data: "id="+id+"&nick="+nick+"&tresc="+tresc,
+      processData: false,
+      contentType: false,
+      error: function(jqXHR, textStatus, errorMessage) {
+          console.log(errorMessage);
+      },
+      success: function(data) {console.log(data)} 
+  });
+  $("form[name='formularz']").toggle();
+  wyswietl_komentarz(nick, tresc);
+}
 
 var pierwszy_raz_l = true;
 
